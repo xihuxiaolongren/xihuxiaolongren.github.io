@@ -1,0 +1,580 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="前景提要：如何开发一个新闻订阅APP之爬虫篇（一、背景介绍&amp;amp;需求分析）做一个特定的爬虫系统，首先考虑它要做什么？从互联网上抓取指定的N个站点信息，解析提取需要的内容，按照特定的结构存储；系统结构图如下：下面是主要的代码结构；首先，定义一个CrawlerBootStrap类，作为整个系统的主入口。
+123456789101112131415161718192021222324252627pu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零开始打造一个新闻订阅APP之爬虫篇（二、实现一个简单的爬虫系统）">
+<meta property="og:url" content="http://xihuxiaolongren.com/2015/05/19/从零开始打造一个新闻订阅APP之爬虫篇（二、实现一个简单的爬虫系统）/index.html">
+<meta property="og:site_name" content="西湖小龙人">
+<meta property="og:description" content="前景提要：如何开发一个新闻订阅APP之爬虫篇（一、背景介绍&amp;amp;需求分析）做一个特定的爬虫系统，首先考虑它要做什么？从互联网上抓取指定的N个站点信息，解析提取需要的内容，按照特定的结构存储；系统结构图如下：下面是主要的代码结构；首先，定义一个CrawlerBootStrap类，作为整个系统的主入口。
+123456789101112131415161718192021222324252627pu">
+<meta property="og:image" content="http://img.blog.csdn.net/20150520202749655">
+<meta property="og:image" content="http://img.blog.csdn.net/20150519212736753">
+<meta property="og:image" content="http://img.blog.csdn.net/20150519212757938">
+<meta property="og:updated_time" content="2016-09-08T08:34:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从零开始打造一个新闻订阅APP之爬虫篇（二、实现一个简单的爬虫系统）">
+<meta name="twitter:description" content="前景提要：如何开发一个新闻订阅APP之爬虫篇（一、背景介绍&amp;amp;需求分析）做一个特定的爬虫系统，首先考虑它要做什么？从互联网上抓取指定的N个站点信息，解析提取需要的内容，按照特定的结构存储；系统结构图如下：下面是主要的代码结构；首先，定义一个CrawlerBootStrap类，作为整个系统的主入口。
+123456789101112131415161718192021222324252627pu">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20150520202749655">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://xihuxiaolongren.com/2015/05/19/从零开始打造一个新闻订阅APP之爬虫篇（二、实现一个简单的爬虫系统）/"/>
+
+  <title> 从零开始打造一个新闻订阅APP之爬虫篇（二、实现一个简单的爬虫系统） | 西湖小龙人 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">西湖小龙人</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                从零开始打造一个新闻订阅APP之爬虫篇（二、实现一个简单的爬虫系统）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-05-19T21:29:32+08:00" content="2015-05-19">
+              2015-05-19
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>前景提要：<a href="http://xihuxiaolongren.com/2015/05/18/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E6%89%93%E9%80%A0%E4%B8%80%E4%B8%AA%E6%96%B0%E9%97%BB%E8%AE%A2%E9%98%85APP%E4%B9%8B%E7%88%AC%E8%99%AB%E7%AF%87%EF%BC%88%E4%B8%80%E3%80%81%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D-%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90%EF%BC%89/">如何开发一个新闻订阅APP之爬虫篇（一、背景介绍&amp;需求分析）</a><br>做一个特定的爬虫系统，首先考虑它要做什么？<br>从互联网上抓取指定的N个站点信息，解析提取需要的内容，按照特定的结构存储；<br>系统结构图如下：<br><img src="http://img.blog.csdn.net/20150520202749655" alt="这里写图片描述"><br>下面是主要的代码结构；<br><img src="http://img.blog.csdn.net/20150519212736753" alt="这里写图片描述"><br><img src="http://img.blog.csdn.net/20150519212757938" alt="这里写图片描述"><br>首先，定义一个CrawlerBootStrap类，作为整个系统的主入口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">public void init()&#123;</div><div class="line">     crawlerList = new ArrayList &lt;Crawler &gt;() ;</div><div class="line">     for( String name : crawlerNameList )&#123;</div><div class="line">          Crawler c = (Crawler ) SpringUtil. getObject( name) ;</div><div class="line">          if( c. init())</div><div class="line">               crawlerList .add (c );</div><div class="line">     &#125;</div><div class="line">     start() ;</div><div class="line">&#125;</div><div class="line">//爬虫线程池，存储多个爬虫，控制同一时间正在运行爬虫个数</div><div class="line">public void start()&#123;</div><div class="line">      //爬虫池</div><div class="line">      int corePoolSize = 20 ;</div><div class="line">      int maximumPoolSize = 1000 ;</div><div class="line">      long keepAliveTime = 100000L ;</div><div class="line">      BlockingQueue &lt;Runnable &gt; runnableTaskQueue = new PriorityBlockingQueue &lt;Runnable &gt;( 20) ;</div><div class="line">      ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor (corePoolSize ,</div><div class="line">      maximumPoolSize , keepAliveTime, TimeUnit .MILLISECONDS , runnableTaskQueue );</div><div class="line">      logger. info( &quot;爬虫池启动&quot; );</div><div class="line">      for( Crawler crawler : crawlerList )&#123;</div><div class="line">           threadPoolExecutor .execute (crawler );</div><div class="line">      &#125;</div><div class="line">      //入库线程</div><div class="line">      logger. info( &quot;入库线程启动&quot; );</div><div class="line">      Thread t = new Thread (newsConsumer );</div><div class="line">      t. start() ;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>代码解释：<br>1、由于无法预估每一个待抓取的网站结构和信息更新方式是不是一成不变的，因此，为每一个站点生成一个具体的实现类；<br>2、这里采用了生产者-消费者模式，由阻塞队列（BlockingQueue）来实现。每一个抓取线程都是生产者，消费者则只有一个入库线程；<br>工作流程如下：</p>
+<ol>
+<li>循环从初始化列表中获取待抓取类，实例化，并添加到抓取列表；</li>
+<li>初始化线程池，由线程池来管理每一个抓取线程（一个线程对应一个站点抓取实例）；</li>
+<li>启动入口线程；</li>
+</ol>
+<p>对于那些几乎都是同一类模式（列表+正文，排序方式按照更新时间倒序排列）的站点，可以抽象出一个抽象类实现共性的抓取逻辑，而每一个子类只实现一些细节点：<br>每一个Crawler都是一个线程，<br>下面介绍CommonNewsListSiteCrawler的实现逻辑</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line">public void run() &#123;</div><div class="line">     try &#123;</div><div class="line">          crawl() ;</div><div class="line">     &#125; catch (Exception e ) &#123;</div><div class="line">          logger. error( &quot;crawl error&quot; , e) ;</div><div class="line">     &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">protected void crawl()&#123;</div><div class="line">      boolean first = true ;</div><div class="line">      while( true )&#123;</div><div class="line">            try&#123;</div><div class="line">                 if( first)&#123;</div><div class="line">                      index = 30;</div><div class="line">                      first = false ;</div><div class="line">                 &#125; else&#123;</div><div class="line">                      index = 5;</div><div class="line">                 &#125;</div><div class="line">                 level = 0;</div><div class="line">                 duplicateNum = 0 ;</div><div class="line">                 NewsResult &lt;List &lt;PublishNewsModuleParams &gt;&gt; newsRes = NewsResult . getSuccessInstance() ;</div><div class="line">                 newsRes. setNextUrl( String .format (crawlUrl ,index ));</div><div class="line">                 do&#123;</div><div class="line">                      newsRes = parseHtml( newsRes. getNextUrl()) ;</div><div class="line">                      if( newsRes. isSuccess())&#123;</div><div class="line">                            int num = addToNewsQueue (newsRes );</div><div class="line">                            Jedis jedis = null;</div><div class="line">                            try&#123;</div><div class="line">                                 jedis = jedisPool. getResource ();</div><div class="line">                                 jedis. incrBy( RedisConstant .CRAWLER_NAMESPACE + namespace + &quot;crawlTotalNum&quot; , num) ;</div><div class="line">                                 jedis. incrBy( RedisConstant .CRAWLER_NAMESPACE + namespace + &quot;todayCrawlTotalNum&quot; , num) ;</div><div class="line">                                 jedis. set( RedisConstant .CRAWLER_NAMESPACE + namespace + &quot;currentCrawlUrl&quot; , currentCrawlUrl) ;</div><div class="line">                            &#125; catch( Exception e)&#123;</div><div class="line">                                 logger. error( &quot;Jedis error&quot; , e) ;</div><div class="line">                            &#125; finally&#123;</div><div class="line">                                 jedisPool. returnResource (jedis );</div><div class="line">                            &#125;</div><div class="line">                      &#125;</div><div class="line">                      else &#123;</div><div class="line">                            logger. error( &quot;解析抓取的url页面失败 ：&quot; + newsRes. getMessage()) ;</div><div class="line">                      &#125;</div><div class="line">                      generateNextUrl (newsRes );</div><div class="line">                 &#125; while( !newsRes .isEndCrawlFlag () &amp;&amp; index &gt; 0) ;</div><div class="line">//                   &#125;while(!newsRes.isEndCrawlFlag());</div><div class="line">            &#125; catch( Exception e)&#123;</div><div class="line">                 logger. error( &quot;failed!&quot; ,e );</div><div class="line">                 intervalTime = 60 *60 *1000 ;</div><div class="line">                 Jedis jedis = null;</div><div class="line">                 try&#123;</div><div class="line">                      jedis = jedisPool. getResource ();</div><div class="line">                      jedis. set( RedisConstant .CRAWLER_NAMESPACE + namespace + &quot;state&quot; , String .valueOf (2 ));</div><div class="line">                 &#125; catch( Exception e1)&#123;</div><div class="line">                      logger. error( &quot;Jedis error&quot; , e1) ;</div><div class="line">                 &#125; finally&#123;</div><div class="line">                      jedisPool. returnResource (jedis );</div><div class="line">                 &#125;</div><div class="line">            &#125;</div><div class="line">            try &#123;</div><div class="line">                 state = StateEnum .Sleeping ;</div><div class="line">                 Thread .sleep (intervalTime );</div><div class="line">            &#125; catch ( InterruptedException e) &#123;</div><div class="line">                 e. printStackTrace ();</div><div class="line">            &#125;</div><div class="line">      &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>代码解释：<br>crawl方法是这一类爬虫的核心代码，每隔一段指定时间，它会抓取一次，考虑更新时间的问题，爬虫是从后往前抓取，即先抓取比较早的数据，首次抓取和第二次抓取设定不同的抓取深度即可（PS：采用这种简单粗暴的方式，能够满足我的实际需求，关注的是较新的内容，并且允许可能存在的丢失问题）<br>整个步骤如下：</p>
+<ol>
+<li>抓取当前列表页；</li>
+<li>分析页面结构，用Jsoup解析出待抓取信息列表，循环处理列表每一条信息；<br>2.1、读取当前信息url地址，根据去重表判断是否已抓取过，如果没有，继续执行下一步；否则，处理下一条记录；<br>2.2、解析获取它的标题，并通过它的链接抓取正文信息，并解析其中的图片地址，调用图片服务器接口下载、存储该图片，并返回图片url；<pre><code>2.3、将解析到的内容包装成一个写入对象，加入阻塞队列中；
+2.4、循环2.1 - 2.3，直到列表末尾； 
+</code></pre></li>
+<li>判断是否满足结束循环条件，是，则结束本次抓取过程，让线程进入睡眠状态；否则，生成下一条抓取记录；</li>
+</ol>
+<p>上述代码逻辑很简单，不过它能够满足当前的需求。同时，由于开销小，重复访问站点频次低，几乎不会被目标站点屏蔽（一直运行，目前尚未被任何一个站点屏蔽），并且能够保证更新内容在数分钟内同步抓取。结构简单使得代码维护起来非常轻松；</p>
+<p>在实际应用中还会遇到一些小问题，也必须要妥善解决，例如：<br>1、如果某个站点的数据因为网站结构，程序bug等等导致数据失效，你要能够及时的修复；<br>2、由于目标站点可能会出现各种网络异常，结构更改等等，因此，需要一个实时监控页面，查看各个爬虫的实时数据是否正常（这里可以有很多优化的地方，不过由于太耗时间，现在只是把一些数据展现出来）；</p>
+<p>总结：<br>在实际的项目中，初期，根据业务需要，尽可能考虑写一个满足当前业务需要的系统。不要追求各种高性能；<br>当然，我说的简单，以满足当前需求为前提，但是一些良好的工程习惯，如面向接口编程，设计类或者模块考虑“高内聚，低耦合”原则，以及代码的可扩展性，可读性等等都是需要你考虑的，这既是对项目负责，也可以让自己养成一个良好编程习惯。<br>用代码中的去重表实现来举例：<br>我在项目中将去重表作为一个类实现，因为去重表看似简单，但根据业务需求还是有很多不同的实现方式；如果你抓取的内容不多，那简单的一个hash表就满足你的要求了；为了避免程序重启或崩溃导致hash表数据丢失，你可能会用redis或其它nosql来实现；如果到后来你发现抓取的内容非常多，内存空间已经不够用了，可以更进一步，使用bloomfilter来实现，它可以大大减少内存开销，代价是存在小概率的误判，并且实现一个稳定可用的bloomfilter需要花费一定的时间成本；</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/05/18/从零开始打造一个新闻订阅APP之爬虫篇（一、背景介绍-需求分析）/" rel="next" title="从零开始打造一个新闻订阅APP之爬虫篇（一、背景介绍&需求分析）">
+                <i class="fa fa-chevron-left"></i> 从零开始打造一个新闻订阅APP之爬虫篇（一、背景介绍&需求分析）
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/05/20/从零开始打造一个新闻订阅APP之服务器篇（一、系统结构设计-开发流程简介）/" rel="prev" title="从零开始打造一个新闻订阅APP之服务器篇（一、系统结构设计&开发流程简介）">
+                从零开始打造一个新闻订阅APP之服务器篇（一、系统结构设计&开发流程简介） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

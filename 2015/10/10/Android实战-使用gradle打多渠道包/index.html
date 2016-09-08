@@ -1,0 +1,587 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="加入新公司后，将项目从Eclipse转到了Android Studio，转换后第一个需要解决的就是编写新的打包脚本。
+Studio默认使用gradle打包，对于gradle还不熟悉的同学，可以先去看看这两篇文章
+Gradle构建Android项目
+使用gradle构建android项目（续）
+我们当时主要面临三个问题：
+1、不同环境：开发，测试，正式三套环境，api地址，第三方推送配置等都不相同；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android实战-使用gradle打多渠道包">
+<meta property="og:url" content="http://xihuxiaolongren.com/2015/10/10/Android实战-使用gradle打多渠道包/index.html">
+<meta property="og:site_name" content="西湖小龙人">
+<meta property="og:description" content="加入新公司后，将项目从Eclipse转到了Android Studio，转换后第一个需要解决的就是编写新的打包脚本。
+Studio默认使用gradle打包，对于gradle还不熟悉的同学，可以先去看看这两篇文章
+Gradle构建Android项目
+使用gradle构建android项目（续）
+我们当时主要面临三个问题：
+1、不同环境：开发，测试，正式三套环境，api地址，第三方推送配置等都不相同；">
+<meta property="og:updated_time" content="2016-09-08T08:50:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android实战-使用gradle打多渠道包">
+<meta name="twitter:description" content="加入新公司后，将项目从Eclipse转到了Android Studio，转换后第一个需要解决的就是编写新的打包脚本。
+Studio默认使用gradle打包，对于gradle还不熟悉的同学，可以先去看看这两篇文章
+Gradle构建Android项目
+使用gradle构建android项目（续）
+我们当时主要面临三个问题：
+1、不同环境：开发，测试，正式三套环境，api地址，第三方推送配置等都不相同；">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://xihuxiaolongren.com/2015/10/10/Android实战-使用gradle打多渠道包/"/>
+
+  <title> Android实战-使用gradle打多渠道包 | 西湖小龙人 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">西湖小龙人</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android实战-使用gradle打多渠道包
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-10-10T17:00:47+08:00" content="2015-10-10">
+              2015-10-10
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>加入新公司后，将项目从Eclipse转到了Android Studio，转换后第一个需要解决的就是编写新的打包脚本。</p>
+<p>Studio默认使用gradle打包，对于gradle还不熟悉的同学，可以先去看看这两篇文章</p>
+<p><a href="http://segmentfault.com/a/1190000002910311" target="_blank" rel="external">Gradle构建Android项目</a></p>
+<p><a href="http://blog.isming.me/2014/11/21/use-gradle-new/" target="_blank" rel="external">使用gradle构建android项目（续）</a></p>
+<p>我们当时主要面临三个问题：</p>
+<p>1、不同环境：开发，测试，正式三套环境，api地址，第三方推送配置等都不相同；</p>
+<p>2、Android有着众多的市场，在打正式包时，我们需要区分不同的渠道，便于统计下载量及分析不同渠道的相关数据情况，需要发布多个渠道包；</p>
+<p>3、打出的文件名等需要定制化并区分渠道和环境等；</p>
+<p>上述问题在gradle中都可以在build.gradle脚本文件中的配置。<br>首先解决第一个问题，在buildTypes中分别定义三套不同环境的配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">buildTypes &#123;</div><div class="line">    debug &#123;</div><div class="line">        manifestPlaceholders = [AppID : &quot;XXX&quot;, AppSecret : &quot;XXX&quot;, AppKey : &quot;XXX&quot;,UMEN_AppKey : &quot;XXX&quot;]</div><div class="line">        buildConfigField &quot;String&quot;, &quot;SERVER_PATH&quot;, &quot;\&quot;http://debug.com\&quot;&quot;</div><div class="line">        buildConfigField &quot;boolean&quot;, &quot;LOG_DEBUG&quot;, &quot;false&quot;</div><div class="line">        buildConfigField &quot;String&quot;, &quot;CHANNEL&quot;, &quot;\&quot;000\&quot;&quot;//渠道号</div><div class="line">        versionNameSuffix &quot;-de&quot;</div><div class="line">    &#125;</div><div class="line">    qatest &#123;</div><div class="line">         manifestPlaceholders = [AppID : &quot;XXX&quot;, AppSecret : &quot;XXX&quot;, AppKey : &quot;XXX&quot;,UMEN_AppKey : &quot;XXX&quot;]</div><div class="line">         buildConfigField &quot;String&quot;, &quot;SERVER_PATH&quot;, &quot;\&quot;http://qatest.com\&quot;&quot;</div><div class="line">         buildConfigField &quot;boolean&quot;, &quot;LOG_DEBUG&quot;, &quot;false&quot;</div><div class="line">         buildConfigField &quot;String&quot;, &quot;CHANNEL&quot;, &quot;\&quot;000\&quot;&quot;//渠道号</div><div class="line">         versionNameSuffix “-qa&quot;</div><div class="line">    &#125;</div><div class="line">    release&#123;</div><div class="line"></div><div class="line">          manifestPlaceholders = [AppID : &quot;XXX&quot;, AppSecret : &quot;XXX&quot;, AppKey : &quot;XXX&quot;,UMEN_AppKey : &quot;XXX”]Ï</div><div class="line">         buildConfigField &quot;String&quot;, &quot;SERVER_PATH&quot;, “\”http://release.com\&quot;&quot;</div><div class="line">         buildConfigField &quot;boolean&quot;, &quot;LOG_DEBUG&quot;, &quot;false&quot;</div><div class="line">         buildConfigField &quot;String&quot;, &quot;CHANNEL&quot;, &quot;\&quot;000\&quot;&quot;//渠道号</div><div class="line">         versionNameSuffix “-qa&quot;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其中：<br>manifestPlaceholders用来替换在AndroidManifest文件中定义好的变量值，上例中前三个变量是个推的配置，最后一个是友盟统计；在文件中使用${UMEN_AppKey},则打包时会自动替换对应的值”XXX”。<br>buildConfigField用来创建一个全局静态常量，在程序中可以用BuildConfig.CHANNEL来使用该常量；<br>versionNameSuffix 表示是否给版本名称添加后缀，方便在测试时区分对应的是哪个环境版本的包。<br>在命令行运行：<br>./gradlew assembleDebug<br>./gradlew assembleQatest<br>./gradlew assembleRelease<br>即会生成不同的变量值。<br>上一步已经解决了如何区分不同环境包对应的一些配置信息，接下来解决多渠道打包问题。我们的应用中自定义了一套统计方式，而区分各个渠道只需要在程序中为不同渠道生成一个唯一的渠道号即可；可以如下添加：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">productFlavors &#123;</div><div class="line">    company &#123;</div><div class="line">        buildConfigField &quot;String&quot;, &quot;CHANNEL&quot;, &quot;\&quot;000\&quot;&quot;    //  官方包</div><div class="line">    &#125;</div><div class="line">    tencent &#123;</div><div class="line">        buildConfigField &quot;String&quot;, &quot;CHANNEL&quot;, &quot;\&quot;001\&quot;&quot;    //  应用宝</div><div class="line">    &#125;</div><div class="line">    baidu &#123;</div><div class="line">        buildConfigField &quot;String&quot;, &quot;CHANNEL&quot;, &quot;\&quot;002\&quot;&quot;    //  百度手机助手</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样在执行上述命令./gradlew assembleDebug时，就会生成三个或更多地渠道包（开发环境），而每个包都将有一个唯一的渠道号（CHANNEL）。<br>注意运行上述命令将会打出所有的渠道，如果想单独打一个渠道包，则运行下述命令即可:<br>./gradlew assembleCompanyDebug</p>
+<p>最后，我们虽然生成了多个渠道包，但是包名的规则还未确定。比如你想要生成的包名如下格式：</p>
+<p>应用名<em>渠道名</em>版本号.apk</p>
+<p>wahaha_baidu_v1.0.apk</p>
+<p>可以使用如下方式：</p>
+<p>在buildTypes中添加如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">applicationVariants.all &#123; variant -&gt;</div><div class="line">    variant.outputs.each &#123; output -&gt;</div><div class="line">        def outputFile = output.outputFile</div><div class="line">        // 输出apk名称为wahaha_001_wandoujia_v1.0.apk</div><div class="line">        if (variant.buildType.name.equals(&quot;debug&quot;)) &#123;</div><div class="line">            def fileName = &quot;wahaha_debug_v$&#123;defaultConfig.versionName&#125;.apk&quot;</div><div class="line">            output.outputFile = new File(outputFile.parent, fileName)</div><div class="line">        &#125;else if(variant.buildType.name.equals(&quot;qatest&quot;))&#123;</div><div class="line">            def fileName = &quot;wahaha_qatest_v$&#123;defaultConfig.versionName&#125;.apk&quot;</div><div class="line">            output.outputFile = new File(outputFile.parent, fileName)</div><div class="line">        &#125;else if(variant.buildType.name.equals(&quot;release&quot;))&#123;</div><div class="line">            def fileName = &quot;wahaha$&#123;variant.productFlavors[0].name&#125;_v$&#123;defaultConfig.versionName&#125;.apk&quot;</div><div class="line">            output.outputFile = new File(outputFile.parent, fileName)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>gradle对于多渠道和不同环境打包的支持非常优雅，也是Google官方推荐的打包方式，除了上面这些功能，还有很多支持的功能如：代码混淆，zip对齐，dex超过65535限制等等，在前面两篇文章中都有讲解，大家有什么问题也可以在评论中一起探讨。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/10/10/Android实战-初探EventBus/" rel="next" title="Android实战-初探EventBus">
+                <i class="fa fa-chevron-left"></i> Android实战-初探EventBus
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/09/05/hello-world/" rel="prev" title="Hello World">
+                Hello World <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

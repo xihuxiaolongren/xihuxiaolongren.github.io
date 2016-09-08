@@ -84,18 +84,16 @@
 
 
 
-<meta name="description" content="这段时间，打算好好写写博客，希望将自己前段时间的开发经历梳理一遍，看看能不能沉淀一些东西，也希望能够和有共同兴趣的同学一起探讨学习。有兴趣的同学可以看看前两篇文章：“创业梦”的破碎布板的前世今生我开发的就是一个类似于Zaker和鲜果等新闻订阅服务的APP；接下来的一个系列，我都将是围绕这一个主题，按照一定的逻辑，介绍如何一步步地开发出一个新闻订阅APP。首先，将会是第一部分：爬虫篇。爬虫是我工作量">
+<meta name="description" content="最近项目中需要实现一个功能，当用户要发布一条消息时，在当前activity堆栈中可能存在多个页面需要感知到这一事件，并将这条消息显示在最顶端。一开始想到用广播去实现，但是广播会让所有的应用都接收到广播，虽然可以过滤掉；后来寻找解决方案的过程中发现了EventBus，它提供的解决方案非常优雅，这里记录一下。（LocalBroadcastManager也可以实现，但是代码比起EventBus来说复杂一">
 <meta property="og:type" content="article">
-<meta property="og:title" content="从零开始打造一个新闻订阅APP之爬虫篇（一、背景介绍&需求分析）">
-<meta property="og:url" content="http://xihuxiaolongren.com/2015/05/18/从零开始打造一个新闻订阅APP之爬虫篇（一、背景介绍-需求分析）/index.html">
+<meta property="og:title" content="Android实战-初探EventBus">
+<meta property="og:url" content="http://xihuxiaolongren.com/2015/10/10/Android实战-初探EventBus/index.html">
 <meta property="og:site_name" content="西湖小龙人">
-<meta property="og:description" content="这段时间，打算好好写写博客，希望将自己前段时间的开发经历梳理一遍，看看能不能沉淀一些东西，也希望能够和有共同兴趣的同学一起探讨学习。有兴趣的同学可以看看前两篇文章：“创业梦”的破碎布板的前世今生我开发的就是一个类似于Zaker和鲜果等新闻订阅服务的APP；接下来的一个系列，我都将是围绕这一个主题，按照一定的逻辑，介绍如何一步步地开发出一个新闻订阅APP。首先，将会是第一部分：爬虫篇。爬虫是我工作量">
-<meta property="og:image" content="http://img.blog.csdn.net/20150518231917383">
-<meta property="og:updated_time" content="2016-09-08T08:30:11.000Z">
+<meta property="og:description" content="最近项目中需要实现一个功能，当用户要发布一条消息时，在当前activity堆栈中可能存在多个页面需要感知到这一事件，并将这条消息显示在最顶端。一开始想到用广播去实现，但是广播会让所有的应用都接收到广播，虽然可以过滤掉；后来寻找解决方案的过程中发现了EventBus，它提供的解决方案非常优雅，这里记录一下。（LocalBroadcastManager也可以实现，但是代码比起EventBus来说复杂一">
+<meta property="og:updated_time" content="2016-09-08T08:47:19.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="从零开始打造一个新闻订阅APP之爬虫篇（一、背景介绍&需求分析）">
-<meta name="twitter:description" content="这段时间，打算好好写写博客，希望将自己前段时间的开发经历梳理一遍，看看能不能沉淀一些东西，也希望能够和有共同兴趣的同学一起探讨学习。有兴趣的同学可以看看前两篇文章：“创业梦”的破碎布板的前世今生我开发的就是一个类似于Zaker和鲜果等新闻订阅服务的APP；接下来的一个系列，我都将是围绕这一个主题，按照一定的逻辑，介绍如何一步步地开发出一个新闻订阅APP。首先，将会是第一部分：爬虫篇。爬虫是我工作量">
-<meta name="twitter:image" content="http://img.blog.csdn.net/20150518231917383">
+<meta name="twitter:title" content="Android实战-初探EventBus">
+<meta name="twitter:description" content="最近项目中需要实现一个功能，当用户要发布一条消息时，在当前activity堆栈中可能存在多个页面需要感知到这一事件，并将这条消息显示在最顶端。一开始想到用广播去实现，但是广播会让所有的应用都接收到广播，虽然可以过滤掉；后来寻找解决方案的过程中发现了EventBus，它提供的解决方案非常优雅，这里记录一下。（LocalBroadcastManager也可以实现，但是代码比起EventBus来说复杂一">
 
 
 
@@ -116,9 +114,9 @@
 
 
 
-  <link rel="canonical" href="http://xihuxiaolongren.com/2015/05/18/从零开始打造一个新闻订阅APP之爬虫篇（一、背景介绍-需求分析）/"/>
+  <link rel="canonical" href="http://xihuxiaolongren.com/2015/10/10/Android实战-初探EventBus/"/>
 
-  <title> 从零开始打造一个新闻订阅APP之爬虫篇（一、背景介绍&需求分析） | 西湖小龙人 </title>
+  <title> Android实战-初探EventBus | 西湖小龙人 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -238,7 +236,7 @@
             
             
               
-                从零开始打造一个新闻订阅APP之爬虫篇（一、背景介绍&需求分析）
+                Android实战-初探EventBus
               
             
           </h1>
@@ -250,8 +248,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-05-18T21:31:11+08:00" content="2015-05-18">
-              2015-05-18
+            <time itemprop="dateCreated" datetime="2015-10-10T11:57:35+08:00" content="2015-10-10">
+              2015-10-10
             </time>
           </span>
 
@@ -278,23 +276,15 @@
       
 
       
-        <p>这段时间，打算好好写写博客，希望将自己前段时间的开发经历梳理一遍，看看能不能沉淀一些东西，也希望能够和有共同兴趣的同学一起探讨学习。<br>有兴趣的同学可以看看前两篇文章：<br><a href="http://xihuxiaolongren.com/2015/05/18/%E5%88%9B%E4%B8%9A%E6%A2%A6%E7%9A%84%E7%A0%B4%E7%A2%8E/">“创业梦”的破碎</a><br><a href="http://xihuxiaolongren.com/2015/05/18/%E5%B8%83%E6%9D%BF%E7%9A%84%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F/">布板的前世今生</a><br>我开发的就是一个类似于Zaker和鲜果等新闻订阅服务的APP；接下来的一个系列，我都将是围绕这一个主题，按照一定的逻辑，介绍如何一步步地开发出一个新闻订阅APP。<br>首先，将会是第一部分：爬虫篇。<br>爬虫是我工作量最少，但是代码写的最有意思的一部分。<br>好了，言归正传，学习爬虫，不得不先提到通用搜索引擎的爬虫是如何工作的，先来看一张图：<br><img src="http://img.blog.csdn.net/20150518231917383" alt="这里写图片描述"><br>注：nutch原理图<br>这大概是网上流传最广的一张关于爬虫的介绍图，左半部分即是爬虫的工作流程了。<br>它的工作步骤简单的概括大致分为以下几步：</p>
-<ol>
-<li>指定需要搜索的页面集的url正则表达式;</li>
-<li>注入urls种子，（通常是root url），并更新到待抓取集合中;</li>
-<li>抓取当前待抓取集合中的urls所对应的页面;</li>
-<li>解析抓取到的页面，包括： 提取超链接，去重，合并到待抓取集合中;</li>
-<li>重复3,4两个步骤。直到集合为空或指定的抓取深度结束;</li>
-</ol>
-<p>通用搜索引擎能不能用于特定的爬虫呢？我的理解是肯定能，但是用已有的开源爬虫去解决自己的需求有以下两方面的问题：<br>1、“杀鸡焉用牛刀”，通用的爬虫搜索面临的问题是如何抓取一个体量巨大的信息网，解析各种各样不同的web文档结构，而我只是需要去抓取一类特定的站点；<br>2、“牛刀”用来“杀鸡”，必须要对它进行改造，但改造这把牛刀的成本太高。必须要对这把“刀”有非常深刻的理解，深入掌握它的工作原理，这样当爬虫遇到问题时，才能快速的通过修改内部代码去满足“杀鸡”的每一个细节，而理解它的过程耗费的时间和成本远远大于自己重新写一个简单，特定的爬虫系统；</p>
-<p>基于上述两点考虑，我决定自己写一个简易的爬虫系统来满足自己抓取的需求。那么问题来了，<br>一、你要抓取哪些信息？以什么样的方式去存储和展现？<br>答：最初的想法就是抓取自己经常看的一些媒体，资讯类站点，先满足自己的需求。通过分析类似于“创业邦”、“36氪”、“Pingwest”等站点，可以发现它们的特点都是一样的：列表页面+正文信息。同样，抓取到移动端对应的也是一个个的站点-》信息列表-》正文内容；<br>二、目前系统主要解决的问题和瓶颈有哪些？<br>答： 1. 快速接入并稳定抓取当前业务需要的来源网站的news信息； 如何保证能够适应各种 html结构的页面解析；（合理的抽象+具体实现）；</p>
-<ol>
-<li>系统对单个站点的信息更新只需要最新的一部分内容； 不要对网站在短时间内产生大量抓取请求，容易被目标站点屏蔽； </li>
-<li>系统稳定性保障代码的鲁棒性；爬虫可能面对的问题：解析失败， http返回各种的各种状态码处理 ,其它异常处理； </li>
-<li>监控各个crawler的实时状态信息，对异常的信息进行人工处理； </li>
-<li>在初期只能用一台机器简单，快速地完成所有的爬虫工作</li>
-</ol>
-<p>下一篇，我会详细介绍如何实现这样一个简单但满足当前需求的爬虫；</p>
+        <p>最近项目中需要实现一个功能，当用户要发布一条消息时，在当前activity堆栈中可能存在多个页面需要感知到这一事件，并将这条消息显示在最顶端。一开始想到用广播去实现，但是广播会让所有的应用都接收到广播，虽然可以过滤掉；后来寻找解决方案的过程中发现了EventBus，它提供的解决方案非常优雅，这里记录一下。（LocalBroadcastManager也可以实现，但是代码比起EventBus来说复杂一些）</p>
+<p>实现上述功能所需代码示例如下：<br>1、定义一个事件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public class PublishDynamicEvent&#123;</div><div class="line">    private Dynamic dynamic;</div><div class="line">    private Dynamic sendingDynamic;</div><div class="line">    public PublishDynamicEvent(Dynamic dynamic, Dynamic sendingDynamic) &#123;</div><div class="line">        this.dynamic = dynamic;</div><div class="line">        this.sendingDynamic = sendingDynamic;</div><div class="line">    &#125;</div><div class="line">    public Dynamic getDynamic()&#123;</div><div class="line">        return dynamic;</div><div class="line">    &#125;</div><div class="line">    public Dynamic getSendingDynamic() &#123;</div><div class="line">        return sendingDynamic;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>2、在需要感知该事件发生的activity中添加下述方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public void onEventMainThread(PublishDynamicEvent event) &#123;</div><div class="line">    …//处理该事件</div><div class="line">&#125;</div><div class="line">在onCreate方法中注册：</div><div class="line">@Override</div><div class="line">public void onCreate(Bundle savedInstanceState) &#123;</div><div class="line">    ...</div><div class="line">    EventBus.getDefault().register(this);</div><div class="line">&#125;</div><div class="line">在onDestroy方法中取消注册：</div><div class="line">@Override</div><div class="line">protected void onDestroy()&#123;</div><div class="line">    super.onDestroy();</div><div class="line">    EventBus.getDefault().unregister(this);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>3、在发布该事件的地方添加下面一句话：<br>EventBus.getDefault().post(new PrePublishDynamicEvent(dynamic));</p>
+<p>是不是非常简单，可读性和灵活性都很高。EventBus应用的场景非常广泛，传统的事件传递方式包括：Handler、BroadCastReceiver、Interface 回调等都可以用用它来替代，再举个常见的例子：你的某些页面需要在接收到某些推送通知时，在布局上发生相应变化，诸如显示小红点，新消息数之类的提醒，都可以使用EventBus。</p>
+<p>参考：</p>
+<p><a href="http://www.codekk.com/blogs/detail/54cfab086c4761e5001b2538" target="_blank" rel="external">EventBus 源码解析</a></p>
 
       
     </div>
@@ -320,16 +310,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/05/18/布板的前世今生/" rel="next" title="布板的前世今生">
-                <i class="fa fa-chevron-left"></i> 布板的前世今生
+              <a href="/2015/05/29/从零开始打造一个新闻订阅APP之服务器篇（二、类时间片轮转算法-redis-sorted-set-实现“逛”功能）/" rel="next" title="从零开始打造一个新闻订阅APP之服务器篇（二、类时间片轮转算法+redis sorted set 实现“逛”功能）">
+                <i class="fa fa-chevron-left"></i> 从零开始打造一个新闻订阅APP之服务器篇（二、类时间片轮转算法+redis sorted set 实现“逛”功能）
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/05/19/从零开始打造一个新闻订阅APP之爬虫篇（二、实现一个简单的爬虫系统）/" rel="prev" title="从零开始打造一个新闻订阅APP之爬虫篇（二、实现一个简单的爬虫系统）">
-                从零开始打造一个新闻订阅APP之爬虫篇（二、实现一个简单的爬虫系统） <i class="fa fa-chevron-right"></i>
+              <a href="/2015/10/10/Android实战-使用gradle打多渠道包/" rel="prev" title="Android实战-使用gradle打多渠道包">
+                Android实战-使用gradle打多渠道包 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
