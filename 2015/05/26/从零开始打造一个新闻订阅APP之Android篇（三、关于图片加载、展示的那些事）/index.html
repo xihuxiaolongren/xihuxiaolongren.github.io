@@ -92,7 +92,7 @@
 <meta property="og:description" content="在上一篇文章 如何开发一个新闻订阅APP之Android篇（二、从“逛”页面谈谈多种格式listview的实现细节）中，我介绍了lsitView的多种布局的实现细节，这其中包含了很多图片的显示。其实当前比较流行的APP中，随处可见大量的图片，这里把自己遇到的一些问题总结出来，简单的加载图片通常需要注意以下两个细节：1、在开发android程序时，如果你在UI线程，也就是主线程中做了类似于网络连接这">
 <meta property="og:image" content="http://uisource.com/wp-content/uploads/2014/06/Android-Image-Slider.gif">
 <meta property="og:image" content="http://img.blog.csdn.net/20150522000631480">
-<meta property="og:updated_time" content="2016-09-08T08:51:58.000Z">
+<meta property="og:updated_time" content="2016-09-08T08:55:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从零开始打造一个新闻订阅APP之Android篇（三、关于图片加载、展示的那些事）">
 <meta name="twitter:description" content="在上一篇文章 如何开发一个新闻订阅APP之Android篇（二、从“逛”页面谈谈多种格式listview的实现细节）中，我介绍了lsitView的多种布局的实现细节，这其中包含了很多图片的显示。其实当前比较流行的APP中，随处可见大量的图片，这里把自己遇到的一些问题总结出来，简单的加载图片通常需要注意以下两个细节：1、在开发android程序时，如果你在UI线程，也就是主线程中做了类似于网络连接这">
@@ -279,7 +279,7 @@
       
 
       
-        <p>在上一篇文章 <a href="http://blog.csdn.net/yangno11988/article/details/45921719" target="_blank" rel="external">如何开发一个新闻订阅APP之Android篇（二、从“逛”页面谈谈多种格式listview的实现细节）</a>中，我介绍了lsitView的多种布局的实现细节，这其中包含了很多图片的显示。其实当前比较流行的APP中，随处可见大量的图片，这里把自己遇到的一些问题总结出来，<br>简单的加载图片通常需要注意以下两个细节：<br>1、在开发android程序时，如果你在UI线程，也就是主线程中做了类似于网络连接这些事的时候，程序是不能运行的。因为android的开发规范要求，主UI线程不允许处理一些耗时任务，如果需要连接网络获取数据，你需要在子线程中完成这件事。android提供了Handler和AsyncTask等封装好的异步消息处理机制。它们使得你非常方便的在子线程和UI线程之间进行通信和切换。关于AsyncTask，这篇文章讲的非常透彻 <a href="http://blog.csdn.net/guolin_blog/article/details/11711405" target="_blank" rel="external">Android AsyncTask完全解析，带你从源码的角度彻底理解</a>，这里就不多赘述了。</p>
+        <p>在上一篇文章 <a href="http://xihuxiaolongren.com/2015/05/22/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E6%89%93%E9%80%A0%E4%B8%80%E4%B8%AA%E6%96%B0%E9%97%BB%E8%AE%A2%E9%98%85APP%E4%B9%8BAndroid%E7%AF%87%EF%BC%88%E4%BA%8C%E3%80%81%E4%BB%8E%E2%80%9C%E9%80%9B%E2%80%9D%E9%A1%B5%E9%9D%A2%E8%B0%88%E8%B0%88%E5%A4%9A%E7%A7%8D%E6%A0%BC%E5%BC%8Flistview%E7%9A%84%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82%EF%BC%89/">如何开发一个新闻订阅APP之Android篇（二、从“逛”页面谈谈多种格式listview的实现细节）</a>中，我介绍了lsitView的多种布局的实现细节，这其中包含了很多图片的显示。其实当前比较流行的APP中，随处可见大量的图片，这里把自己遇到的一些问题总结出来，<br>简单的加载图片通常需要注意以下两个细节：<br>1、在开发android程序时，如果你在UI线程，也就是主线程中做了类似于网络连接这些事的时候，程序是不能运行的。因为android的开发规范要求，主UI线程不允许处理一些耗时任务，如果需要连接网络获取数据，你需要在子线程中完成这件事。android提供了Handler和AsyncTask等封装好的异步消息处理机制。它们使得你非常方便的在子线程和UI线程之间进行通信和切换。关于AsyncTask，这篇文章讲的非常透彻 <a href="http://blog.csdn.net/guolin_blog/article/details/11711405" target="_blank" rel="external">Android AsyncTask完全解析，带你从源码的角度彻底理解</a>，这里就不多赘述了。</p>
 <p>2、这个列表页有很多的图片。很容易想象，手机的内存资源是很宝贵的，如果不对内存加以控制，可能APP很快就会出现OOM错误。控制内存溢出有很多方法，一般来讲，都是利用缓存机制，通常有内存缓存和Disk缓存两层控制即可。<br>对于程序中图片的内存控制问题，这篇博文同样讲的非常透彻：<br><a href="http://blog.csdn.net/guolin_blog/article/details/9316683" target="_blank" rel="external">Android高效加载大图、多图解决方案，有效避免程序OOM</a></p>
 <p>除此之外，初学者很可能会遇到的一个坑是图片的大小和imageView大小之间的关系。如果你将一张大于屏幕大小的图片不经处理直接加载到imageView中，这本身没有什么问题，图片会根据你的imageView的设置自动缩放（除非单张图片直接超过了android默认的内存限制，图片会无法显示），但是可能依据你的程序实现会出现不同的问题。在我的程序中一开始出现的问题是listView滑动会特别卡，通过日志打印，发现图片平均每张接近7,80KB，可是这也不大啊。但在debug程序的时候，发现LRUCache只能保存5个左右的图片，已经用掉20MB内存了，这个时候终于恍然大悟，图片加载到内存中显示，和存储大小完全是两个概念，因为现在无论什么格式的图片，几乎都实现了很大的压缩。而在服务器端开发的时候，基本没有考虑过图片显示的时候需要的内存大小，只需要传给浏览器，怎么显示都是客户端的问题了。<br>因为这个原因，LRUCache的命中非常低，几乎无用了，然后，DiskLRUCache在并发访问过大时，特别是有很多写入请求的时候，会特别卡。所以，你需要根据你的imageView大小来控制加载到内存中的图片大小；</p>
 <p>ok，上面讲到的都是自己在实现加载图片的过程中遇到的一些问题。接下来，给新手们介绍一个开源图片加载神器Android-Universal-Image-Loader。如果你一开始用的就是它来实现加载图片，上面所有问题几乎都不会遇到。因为这个组件全部帮你搞定了，包括网络请求，缓存，图片大小自适应，图片释放等等问题；<br>但对于初学者而言，我还是推荐大家按照<a href="http://blog.csdn.net/guolin_blog/article/details/9316683" target="_blank" rel="external">Android高效加载大图、多图解决方案，有效避免程序OOM</a>这篇文章学习并自己先实现下图片加载和缓存处理，结合DDMS等内存分析工具排查这个过程遇到的问题，可以帮助你深入的理解android图片处理这一块的细节实现。</p>
@@ -387,7 +387,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-count">13</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
